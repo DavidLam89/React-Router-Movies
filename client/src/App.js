@@ -13,9 +13,19 @@ export default class App extends Component {
     };
   }
 
+  containsObject = (obj, list) => {
+    var i;
+    for (i = 0; i < list.length; i++) {
+        if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
+            return true;
+        }
+    }
+    return false;
+  };
+
   addToSavedList = movie => {
     const savedList = this.state.savedList;
-    savedList.push(movie);
+    if (!this.containsObject(movie,savedList)) savedList.push(movie);
     this.setState({ savedList });
   };
 
@@ -24,7 +34,7 @@ export default class App extends Component {
       <div>
         <SavedList list={this.state.savedList} />
         <Route path="/" exact component={MovieList} />
-        <Route path="/movies/:id" component={Movie} />
+        <Route path="/movies/:id" render={(props) => <Movie {...props} addToSavedList={this.addToSavedList} />} />
       </div>
     );
   }
